@@ -1,0 +1,34 @@
+{
+	"mappings": {
+		"test": {
+			"properties": {
+				"c": {
+					"type": "keyword"
+				}
+			}
+		},
+		"feed_item": {
+			"properties": {
+				"_id": {
+					"type": "text"
+				},
+				"test_thing": {
+					"type": "object",
+					"properties": {
+						"a": {
+							"type": "keyword"
+						},
+						"b": {
+							"type": "object",
+							"properties": {
+								"c": {
+									"type": "keyword"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
