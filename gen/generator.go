@@ -150,14 +150,14 @@ func (g *Generator) genMappings(t reflect.Type) error {
 
 	for i := 0; i < nf; i++ {
 		f := t.Field(i)
-		tag := f.Tag.Get(`es-mapping`)
+		tag := f.Tag.Get(`es-mappings`)
 		if len(tag) > 0 {
 			if i > 0 {
 				g.out.WriteString(`,`)
 			}
 			parts := strings.Split(tag, `,`)
 			if len(parts) < 1 {
-				return errors.New("es-mapping tags must specify a name and a type. Eg: `es-mapping:\"_id,keyword\"`")
+				return errors.New("es-mappings tags must specify a name and a type. Eg: `es-mappings:\"_id,keyword\"`")
 			}
 			mname, mtype := parts[0], parts[1]
 			if len(mname) < 1 {

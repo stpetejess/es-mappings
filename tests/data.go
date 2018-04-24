@@ -2,14 +2,14 @@ package tests
 
 // es-mappings:json
 type FeedItem struct {
-	ID string `es-mapping:"_id,text"`
+	ID string `es-mappings:"_id,text"`
 
 	TestThing struct {
-		A string `es-mapping:"a,keyword"`
-		B Test   `es-mapping:"b,object"`
-	} `es-mapping:",object"`
+		A string `es-mappings:"a,keyword"`
+		B Test   `es-mappings:"b,object"`
+	} `es-mappings:",object"`
 }
 
 type Test struct {
-	C string `es-mapping:"c,keyword"`
+	C string `es-mappings:"c,keyword"`
 }
