@@ -8,14 +8,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bringhub/ebay_api/cmd/es-mapper/bootstrap"
-	"github.com/bringhub/ebay_api/cmd/es-mapper/parser"
+	"github.com/stpetejess/es-mappings/bootstrap"
+	"github.com/stpetejess/es-mappings/parser"
 )
 
 var allStructs = flag.Bool("all", false, "generate marshaler/unmarshalers for all structs in a file")
 var specifiedName = flag.String("output_filename", "", "specify the filename of the output")
 var processPkg = flag.Bool("pkg", false, "process the whole package instead of just the given file")
 var skipFmt = flag.Bool("nofmt", false, "skip final formatting of the json file")
+var debug = flag.Bool("debug", false, "print debug information on types found and mappings generated")
 
 func generate(fname string) (err error) {
 	fInfo, err := os.Stat(fname)
@@ -30,26 +31,32 @@ func generate(fname string) (err error) {
 
 	var outName string
 	if fInfo.IsDir() {
-		outName = filepath.Join(fname, p.PkgName+"_es_mapper.json")
+		outName = filepath.Join(fname, p.PkgName+"_es_mappings.json")
 	} else {
 		if s := strings.TrimSuffix(fname, ".go"); s == fname {
 			return errors.New("Filename must end in '.go'")
 		} else {
-			outName = s + "_es_mapper.json"
+			outName = s + "_es_mappings.json"
 		}
 	}
 
 	if *specifiedName != "" {
 		outName = *specifiedName
 	}
+
+	var skip bool
+	if skipFmt != nil {
+		skip = *skipFmt
+	}
 	// fmt.Fprintf(os.Stderr, "struct names: %v", p.StructNames)
 	g := bootstrap.Generator{
-		PkgPath:    p.PkgPath,
-		PkgName:    p.PkgName,
-		Types:      p.StructNames,
-		OutName:    outName,
-		GoPath:     os.Getenv("GOPATH"),
-		SkipFormat: skipFmt,
+		PkgPath: p.PkgPath,
+		PkgName: p.PkgName,
+		Types:   p.StructNames,
+		OutName: outName,
+		GoPath:  os.Getenv("GOPATH"),
+		SkipFmt: skip,
+		Debug:   *debug,
 	}
 
 	if err := g.Run(); err != nil {

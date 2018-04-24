@@ -29,13 +29,14 @@ type Generator struct {
 
 	// types that encoders were requested for (e.g. by encoders of other types)
 	typesUnseen []reflect.Type
+
+	debug bool
 }
 
 // NewGenerator initializes and returns a Generator.
 func NewGenerator(filename string) *Generator {
 	ret := &Generator{
-		typesSeen:     make(map[reflect.Type]bool),
-		functionNames: make(map[string]reflect.Type),
+		typesSeen: make(map[reflect.Type]bool),
 	}
 
 	// Use a file-unique prefix on all auxiliary funcs to avoid
@@ -45,6 +46,10 @@ func NewGenerator(filename string) *Generator {
 	ret.hashString = fmt.Sprintf("%x", hash.Sum32())
 
 	return ret
+}
+
+func (g *Generator) Debug() {
+	g.debug = true
 }
 
 func (g *Generator) SkipFmt() {
@@ -95,7 +100,9 @@ func (g *Generator) Add(obj interface{}) {
 func (g *Generator) Run(out io.Writer) error {
 	g.out = &bytes.Buffer{}
 
-	fmt.Fprintf(os.Stderr, "types unseen: %v", spew.Sdump(g.typesUnseen))
+	if g.debug {
+		fmt.Fprintf(os.Stderr, "types unseen: %v", spew.Sdump(g.typesUnseen))
+	}
 
 	g.out.WriteString(`{"mappings":{`)
 	for len(g.typesUnseen) > 0 {
@@ -118,15 +125,24 @@ func (g *Generator) Run(out io.Writer) error {
 	g.out.WriteString(`}}`)
 	data := &bytes.Buffer{}
 
-	if err := json.Indent(data, g.out.Bytes(), "", "	"); err != nil {
-		return err
+	if !g.skipFmt {
+		if g.debug {
+			fmt.Fprintln(os.Stderr, "formatting output...")
+		}
+		if err := json.Indent(data, g.out.Bytes(), "", "	"); err != nil {
+			return err
+		}
+	} else {
+		data = g.out
 	}
 	_, err := out.Write(data.Bytes())
 	return err
 }
 
 func (g *Generator) genMappings(t reflect.Type) error {
-	fmt.Fprintf(os.Stderr, "generating mappings for: %v", spew.Sdump(t))
+	if g.debug {
+		fmt.Fprintf(os.Stderr, "generating mappings for: %v", spew.Sdump(t))
+	}
 	// get the tags
 	nf := t.NumField()
 

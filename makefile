@@ -18,13 +18,12 @@ build:
 	go build -i -o .root/bin/es-mappings $(PKG)/es-mappings
 
 generate: root build
-	.root/bin/es-mappings -all -nofmt .root/src/$(PKG)/tests/data.go
+	.root/bin/es-mappings -all -output_filename=.root/src/$(PKG)/tests/feed_item_mapping_actual.json .root/src/$(PKG)/tests/data.go
 
 test: generate root
 	go test \
 		$(PKG)/tests \
 		$(PKG)/gen
-	golint -set_exit_status .root/src/$(PKG)/tests/*es-mappings.go
 
 
 .PHONY: root clean generate test build
