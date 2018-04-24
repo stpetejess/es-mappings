@@ -4,6 +4,9 @@
 			"properties": {
 				"c": {
 					"type": "keyword"
+				},
+				"d": {
+					"type": "date"
 				}
 			}
 		},
@@ -23,6 +26,9 @@
 							"properties": {
 								"c": {
 									"type": "keyword"
+								},
+								"d": {
+									"type": "date"
 								}
 							}
 						}

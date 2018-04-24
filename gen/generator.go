@@ -165,7 +165,7 @@ func (g *Generator) genMappings(t reflect.Type) error {
 			}
 			g.out.WriteString(fmt.Sprintf(`"%s":{"type":"%s"`, mname, mtype))
 			// TODO: handle pointers?
-			if f.Type.Kind() == reflect.Struct {
+			if f.Type.Kind() == reflect.Struct && mtype == `object` {
 				g.out.WriteString(`,`)
 				if err := g.genMappings(f.Type); err != nil {
 					return err
