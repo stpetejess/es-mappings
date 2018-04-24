@@ -1,6 +1,6 @@
 package tests
 
-// es-mapper:json
+// es-mappings:json
 type FeedItem struct {
 	ID string `es-mapping:"_id,text"`
 

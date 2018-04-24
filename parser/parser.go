@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-const structComment = "es-mapper:json"
-const structIgnoreComment = "es-mapper:ignore"
+const structComment = "es-mappings:json"
+const structIgnoreComment = "es-mappings:ignore"
 
 type Parser struct {
 	PkgPath     string

@@ -97,8 +97,8 @@ func (g *Generator) Run() error {
 		return err
 	}
 	defer os.Remove(path)
-	// tmpName := fmt.Sprintf("%v/src/%v/%v.tmp", g.GoPath, g.PkgPath, g.OutName)
-	if f, err = os.Create(g.OutName + ".tmp"); err != nil { //g.OutName + ".tmp"
+
+	if f, err = os.Create(g.OutName + ".tmp"); err != nil {
 		return err
 	}
 	defer os.Remove(f.Name()) // will not remove after rename
@@ -111,6 +111,6 @@ func (g *Generator) Run() error {
 	}
 
 	f.Close()
-	// outName := strings.TrimSuffix(f.Name(), ".tmp")
-	return os.Rename(f.Name(), g.OutName) //g.OutName)
+
+	return os.Rename(f.Name(), g.OutName)
 }
